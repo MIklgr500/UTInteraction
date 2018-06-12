@@ -1,0 +1,70 @@
+=====================================================================
+mynet_v4 (mse)
+ds = DataSet(nframe=30, fstride=6, name='UT interaction', size=[224, 224, 3], filepaths=paths, y=y, kernel_size=4)
+#ds.make_set(name='train')
+#ds.make_set(name='valid')
+
+opt = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, decay=0.1)
+#opt = SGD(lr=2*1e-2, momentum=0.9, nesterov=True, decay=0.2)
+
+model = MobileNet(alpha=1.0, shape=[29,56,56,1], nframe=29)
+model.compile(optimizer=opt,
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+model.summary()
+#model.load_weights('mynet_v2.h5')
+model.fit_generator(generator=ds.train_gen(batch_size=5,aug_config=tr_config),
+                    steps_per_epoch=100,
+                    epochs=300,
+                    validation_data=ds.valid_gen(),
+                    verbose=1,
+                    validation_steps=ds.getVlen,
+                    callbacks=callbacks)
+
+                    img_input = Input(shape)
+
+                    x = TimeDistributed(Convolution2D(int(32 * alpha), (3, 3), strides=(2, 2), padding='same', use_bias=False))(img_input)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+
+                    x = TimeDistributed(DepthwiseConvolution2D(int(32 * alpha), (3, 3), strides=(1, 1), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+                    x = TimeDistributed(Convolution2D(int(64 * alpha), (1, 1), strides=(1, 1), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+
+                    x = TimeDistributed(DepthwiseConvolution2D(int(64 * alpha), (3, 3), strides=(2, 2), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+                    x = TimeDistributed(Convolution2D(int(128 * alpha), (1, 1), strides=(1, 1), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+
+                    x = TimeDistributed(DepthwiseConvolution2D(int(128 * alpha), (3, 3), strides=(1, 1), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+                    x = TimeDistributed(Convolution2D(int(128 * alpha), (1, 1), strides=(1, 1), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+
+                    x = TimeDistributed(DepthwiseConvolution2D(int(128 * alpha), (3, 3), strides=(2, 2), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+                    x = TimeDistributed(Convolution2D(int(256 * alpha), (1, 1), strides=(1, 1), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+
+                    x = TimeDistributed(DepthwiseConvolution2D(int(256 * alpha), (3, 3), strides=(1, 1), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+                    x = TimeDistributed(Convolution2D(int(256 * alpha), (1, 1), strides=(1, 1), padding='same', use_bias=False))(x)
+                    x = TimeDistributed(BatchNormalization())(x)
+                    x = TimeDistributed(Activation('relu'))(x)
+
+                    x = ConvLSTM2D(int(128 * alpha), kernel_size=(7, 7), activation='relu', dropout=0.15, recurrent_dropout=0., return_sequences=False)(x)
+                    x = GlobalAveragePooling2D()(x)
+                    out=Dense(6, activation='softmax')(x)
+=====================================================================
+*********************************************************************
+=====================================================================
